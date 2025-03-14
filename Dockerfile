@@ -7,16 +7,16 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
-    build-essential \          # For C/C++ compiler
-    python3-dev \              # Python development headers
-    libssl-dev \               # SSL/TLS support
-    libffi-dev                 # For cryptography
+    build-essential \
+    python3-dev \
+    libssl-dev \
+    libffi-dev
 
 # Create and activate virtual environment
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade pip and install wheel (for binary packages)
+# Upgrade pip and install wheel
 RUN pip install --upgrade pip setuptools wheel
 
 # Install requirements
