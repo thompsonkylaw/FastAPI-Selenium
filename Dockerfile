@@ -1,21 +1,23 @@
 ARG PORT=443
 
-
-
 FROM cypress/browsers:latest
 
+# Install Python and pip
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
-RUN apt-get install python3 -y
+# Create a virtual environment
+RUN python3 -m venv /opt/venv
 
-RUN echo $(python3 -m site --user-base)
+# Use the virtual environment's pip and python
+ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements.txt  .
+# Upgrade pip and install dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip setuptools && \
+    pip install -r requirements.txt
 
-ENV PATH /home/root/.local/bin:${PATH}
-
-# RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt  
-RUN  apt-get update && apt-get install -y python3-pip
-RUN pip3 install -r requirements.txt --index-url https://pypi.org/simple
+# Copy the application code
 COPY . .
 
+# Run the app with the virtual environment's Python
 CMD uvicorn main:app --host 0.0.0.0 --port $PORT
